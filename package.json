@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "three": "^0.125.2",
+    "wavefront-obj-parser": "^2.0.1"
+  }
+}
