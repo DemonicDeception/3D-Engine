@@ -1,7 +1,7 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/build/three.module.js';
 import {OBJLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/loaders/OBJLoader.js';
 import {OrbitControls} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/controls/OrbitControls.js';
-
+let isclicked = false
 function main() {
   const canvas = document.querySelector('#c');
   const renderer = new THREE.WebGLRenderer({canvas});
@@ -63,15 +63,17 @@ function main() {
       this.pickedObjectSavedColor = null;
     }
     pick(normalizedPosition, scene, camera, time) {
+      if(isclicked == true){
       this.raycaster.setFromCamera(normalizedPosition, camera);
       const intersectedObjects = this.raycaster.intersectObjects(scene.children);
       if (intersectedObjects.length != 0) {
-        if(intersectedObjects[0].object.name == "Grid"){
+        if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
           if(this.pickedObject != null && this.pickedObject != undefined){
             this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
             this.pickedObjectSavedColor = 0
             this.pickedObject = undefined
             clearArrows();
+            isclicked = false
           }
         }else{
           if(this.pickedObjectSavedColor == null || this.pickedObjectSavedColor == 0){
@@ -103,6 +105,8 @@ function main() {
             const arrowHelperDown= new THREE.ArrowHelper( dir, origin, length, hex );
             arrowHelperDown.name = "ArrowDown"
             scene.add( arrowHelperDown );
+            isclicked = false
+
           }
           this.pickedObject.material.color.set(Math.random() + 0x0FFF00)
         }
@@ -112,10 +116,11 @@ function main() {
           this.pickedObjectSavedColor = 0
           this.pickedObject = undefined
           clearArrows();
-          console.log("HI")
+          isclicked = false
 
         }
       }
+    }
     }
   }
  
@@ -124,7 +129,7 @@ function main() {
   clearPickPosition();
 
   function render(time) {
-    time *= 0.001;  // convert to seconds;
+    time *= 0.001;
 
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
@@ -148,9 +153,10 @@ function main() {
   }
 
   function setPickPosition(event) {
+    isclicked = true
     const pos = getCanvasRelativePosition(event);
     pickPosition.x = (pos.x / canvas.width ) *  2 - 1;
-    pickPosition.y = (pos.y / canvas.height) * -2 + 1;  // note we flip Y
+    pickPosition.y = (pos.y / canvas.height) * -2 + 1;
   }
 
   function clearPickPosition() {
