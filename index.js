@@ -3,10 +3,10 @@ import {OBJLoader} from 'https://threejsfundamentals.org/threejs/resources/three
 import {OrbitControls} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/controls/OrbitControls.js';
 let isclicked = false
 function main() {
-  const canvas = document.querySelector('#c');
+  const canvas = document.getElementById("c");
   const renderer = new THREE.WebGLRenderer({canvas});
   const fov = 60;
-  const aspect = 2;  // the canvas default
+  const aspect = 2;  
   const near = 0.1;
   const far = 200;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -164,7 +164,7 @@ function main() {
     pickPosition.x = -100000;
     pickPosition.y = -100000;
   }
-  document.getElementById("c").addEventListener("mousedown", () => console.log("testing"));
+  canvas.addEventListener("mousedown", () => console.log("testing"));
 
   // let c = document.getElementById("c")
   // console.log(c)
