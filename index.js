@@ -1,21 +1,23 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/build/three.module.js';
 import {OBJLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/loaders/OBJLoader.js';
 import {OrbitControls} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/controls/OrbitControls.js';
-
+let isclicked = false
 function main() {
-  const canvas = document.querySelector('#c');
+  const canvas = document.getElementById("c");
   const renderer = new THREE.WebGLRenderer({canvas});
   const fov = 60;
-  const aspect = 2;  // the canvas default
+  const aspect = 2;  
   const near = 0.1;
   const far = 200;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.z = 30;
+  //camera.position.z = 60
+  camera.position.y = 60
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('black');
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 5, 0);
   controls.update();
+  let clickTime;
   {
     const size = 50;
     const divisions = 20;
@@ -63,15 +65,21 @@ function main() {
       this.pickedObjectSavedColor = null;
     }
     pick(normalizedPosition, scene, camera, time) {
+      if(isclicked == true){
       this.raycaster.setFromCamera(normalizedPosition, camera);
       const intersectedObjects = this.raycaster.intersectObjects(scene.children);
       if (intersectedObjects.length != 0) {
-        if(intersectedObjects[0].object.name == "Grid"){
+        console.log(intersectedObjects)
+        if(intersectedObjects[0].object.name == "ArrowDown" || intersectedObjects[0].object.name == "ArrowUp" ||intersectedObjects[0].object.name == "ArrowLeft" ||intersectedObjects[0].object.name == "ArrowRight"){
+          console.log("Move Object")
+        }
+        if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
           if(this.pickedObject != null && this.pickedObject != undefined){
             this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
             this.pickedObjectSavedColor = 0
             this.pickedObject = undefined
             clearArrows();
+            isclicked = false
           }
         }else{
           if(this.pickedObjectSavedColor == null || this.pickedObjectSavedColor == 0){
@@ -103,6 +111,8 @@ function main() {
             const arrowHelperDown= new THREE.ArrowHelper( dir, origin, length, hex );
             arrowHelperDown.name = "ArrowDown"
             scene.add( arrowHelperDown );
+            isclicked = false
+
           }
           this.pickedObject.material.color.set(Math.random() + 0x0FFF00)
         }
@@ -112,10 +122,11 @@ function main() {
           this.pickedObjectSavedColor = 0
           this.pickedObject = undefined
           clearArrows();
-          console.log("HI")
+          isclicked = false
 
         }
       }
+    }
     }
   }
  
@@ -124,7 +135,7 @@ function main() {
   clearPickPosition();
 
   function render(time) {
-    time *= 0.001;  // convert to seconds;
+    time *= 0.001;
 
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
@@ -148,17 +159,27 @@ function main() {
   }
 
   function setPickPosition(event) {
+    isclicked = true
     const pos = getCanvasRelativePosition(event);
     pickPosition.x = (pos.x / canvas.width ) *  2 - 1;
-    pickPosition.y = (pos.y / canvas.height) * -2 + 1;  // note we flip Y
+    pickPosition.y = (pos.y / canvas.height) * -2 + 1;
   }
 
   function clearPickPosition() {
     pickPosition.x = -100000;
     pickPosition.y = -100000;
   }
-  window.addEventListener('click', setPickPosition);
-
+  canvas.addEventListener("mousedown", () => console.log("testing"));
+  canvas.addEventListener("click", setPickPosition)
+  // let c = document.getElementById("c")
+  // console.log(c)
+  // c.addEventListener('mouseup', setPickPosition);
+  // c.addEventListener('mousedown', mousedownfunc);
+  // function mousedownfunc(){
+  //   console.log("tesjl")
+  //   var date = new Date();
+  //   clickTime = date.getSeconds();
+  // }
   function clearArrows(){
     var selectedObject = scene.getObjectByName("ArrowUp");
     var selectedObject2 = scene.getObjectByName("ArrowDown");
