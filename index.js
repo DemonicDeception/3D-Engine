@@ -16,6 +16,7 @@ function main() {
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 5, 0);
   controls.update();
+  let clickTime;
   {
     const size = 50;
     const divisions = 20;
@@ -163,8 +164,17 @@ function main() {
     pickPosition.x = -100000;
     pickPosition.y = -100000;
   }
-  window.addEventListener('click', setPickPosition);
+  document.getElementById("c").addEventListener("mousedown", () => console.log("testing"));
 
+  // let c = document.getElementById("c")
+  // console.log(c)
+  // c.addEventListener('mouseup', setPickPosition);
+  // c.addEventListener('mousedown', mousedownfunc);
+  // function mousedownfunc(){
+  //   console.log("tesjl")
+  //   var date = new Date();
+  //   clickTime = date.getSeconds();
+  // }
   function clearArrows(){
     var selectedObject = scene.getObjectByName("ArrowUp");
     var selectedObject2 = scene.getObjectByName("ArrowDown");
