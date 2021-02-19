@@ -68,6 +68,10 @@ function main() {
       this.raycaster.setFromCamera(normalizedPosition, camera);
       const intersectedObjects = this.raycaster.intersectObjects(scene.children);
       if (intersectedObjects.length != 0) {
+        console.log(intersectedObjects)
+        if(intersectedObjects[0].object.name == "ArrowDown" || intersectedObjects[0].object.name == "ArrowUp" ||intersectedObjects[0].object.name == "ArrowLeft" ||intersectedObjects[0].object.name == "ArrowRight"){
+          console.log("Move Object")
+        }
         if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
           if(this.pickedObject != null && this.pickedObject != undefined){
             this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
@@ -154,6 +158,7 @@ function main() {
   }
 
   function setPickPosition(event) {
+    console.log(scene)
     isclicked = true
     const pos = getCanvasRelativePosition(event);
     pickPosition.x = (pos.x / canvas.width ) *  2 - 1;
@@ -165,7 +170,7 @@ function main() {
     pickPosition.y = -100000;
   }
   canvas.addEventListener("mousedown", () => console.log("testing"));
-
+  canvas.addEventListener("click", setPickPosition)
   // let c = document.getElementById("c")
   // console.log(c)
   // c.addEventListener('mouseup', setPickPosition);
