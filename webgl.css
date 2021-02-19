@@ -10,8 +10,8 @@ html, body {
   }
   #topBar{
 	position: absolute;
-	width: 100vw;
-	height: 4vw;
+	width: 100%;
+	height: 6%;
 	background: rgb(128, 128, 128);
 	display: flex;
 	border-radius: 10px;

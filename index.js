@@ -10,7 +10,8 @@ function main() {
   const near = 0.1;
   const far = 200;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.z = 30;
+  //camera.position.z = 60
+  camera.position.y = 60
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('black');
   const controls = new OrbitControls(camera, canvas);
@@ -158,7 +159,6 @@ function main() {
   }
 
   function setPickPosition(event) {
-    console.log(scene)
     isclicked = true
     const pos = getCanvasRelativePosition(event);
     pickPosition.x = (pos.x / canvas.width ) *  2 - 1;
