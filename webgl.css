@@ -29,3 +29,21 @@ html, body {
 	box-shadow: 0px 2px 5px #00eeff;
 
 }
+#toolsObjectMode{
+	position: absolute;
+	left: -1vw;
+	top: 5vw;
+	width: 3.5%;
+	height: 85%;
+	border-radius: 10px;
+	background: rgb(128, 128, 128);
+	box-shadow: 0px 2px 5px #00eeff;
+	display: flex;
+	flex-direction: column;
+}
+#toolsObjectMode > button{
+	margin-top: 1vw;
+	width: 90%;
+	height: 5%;
+	margin-left: 10%;
+}

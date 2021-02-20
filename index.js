@@ -1,7 +1,8 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/build/three.module.js';
 import {OBJLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/loaders/OBJLoader.js';
-import {OrbitControls} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/controls/OrbitControls.js';
+import {OrbitControls} from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 let isclicked = false
+const testRender = "./assets/TestRenderObj.obj"
 function main() {
   const canvas = document.getElementById("c");
   const renderer = new THREE.WebGLRenderer({canvas});
@@ -17,13 +18,27 @@ function main() {
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 5, 0);
   controls.update();
-  let clickTime;
   {
     const size = 50;
     const divisions = 20;
     const gridHelper = new THREE.GridHelper( size, divisions );
     gridHelper.name = "Grid"
     scene.add( gridHelper );
+  }
+  {
+  const loader = new OBJLoader();
+  loader.load(
+    'assets/TestRenderObj.obj',
+    function ( object ) {
+      scene.add( object );
+    },
+    function ( xhr ) {
+      console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+    },
+    function ( error ) {
+      console.log( 'An error happened' );
+    }
+  );
   }
   {
     const boxWidth = 1;
@@ -69,6 +84,10 @@ function main() {
       this.raycaster.setFromCamera(normalizedPosition, camera);
       const intersectedObjects = this.raycaster.intersectObjects(scene.children);
       if (intersectedObjects.length != 0) {
+        let Objname = intersectedObjects[0].object.name
+        if(Objname == "Arrow1" || Objname == "Arrow2" || Objname == "Arrow3" || Objname == "Arrow4" || Objname == "Arrow5"){
+          console.log(" ")
+        }
         if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
           if(this.pickedObject != null && this.pickedObject != undefined){
             this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
@@ -82,6 +101,7 @@ function main() {
             this.pickedObject = intersectedObjects[0].object;
             this.pickedObjectSavedColor = intersectedObjects[0].object.material.color
             arrowHandling("add")
+            isclicked = false
           }
           this.pickedObject.material.color.set(Math.random() + 0x0FFF00)
         }
@@ -104,7 +124,7 @@ function main() {
   clearPickPosition();
 
   function render(time) {
-    time *= 0.001;
+    time *= 1;
 
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
@@ -150,18 +170,6 @@ function main() {
   //   var date = new Date();
   //   clickTime = date.getSeconds();
   // }
-  function clearArrows(){
-    var selectedObject = scene.getObjectByName("ArrowUp");
-    var selectedObject2 = scene.getObjectByName("ArrowDown");
-    var selectedObject3 = scene.getObjectByName("ArrowLeft");
-    var selectedObject4 = scene.getObjectByName("ArrowRight");
-
-    scene.remove( selectedObject );
-    scene.remove( selectedObject2 );
-    scene.remove( selectedObject3 );
-    scene.remove( selectedObject4 );
-
-  }
   function arrowHandling(action){
     var i;
     let dir = new THREE.Vector3(-90, 0, 0 );
@@ -202,6 +210,6 @@ function main() {
       }
     }
   }
+  
 }
-
 main();
