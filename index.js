@@ -3,6 +3,7 @@ import {OBJLoader} from 'https://threejsfundamentals.org/threejs/resources/three
 import {OrbitControls} from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 let isclicked = false
 const testRender = "./assets/TestRenderObj.obj"
+let clickTime
 function main() {
   const canvas = document.getElementById("c");
   const renderer = new THREE.WebGLRenderer({canvas});
@@ -159,7 +160,12 @@ function main() {
     pickPosition.x = -100000;
     pickPosition.y = -100000;
   }
-  canvas.addEventListener("mousedown", () => console.log("testing"));
+  function onMouseDown(){
+    let today = new Date();
+    let time = today.getMinutes() + " : " + today.getSeconds()
+    clickTime = time
+  }
+  canvas.addEventListener("mousedown", onMouseDown);
   canvas.addEventListener("click", setPickPosition)
   // let c = document.getElementById("c")
   // console.log(c)
@@ -203,7 +209,7 @@ function main() {
       }
     }else{
       for(i = 0; i <= 6; i++){
-        var arrow = scene.getObjectByName("Arrow" + i.toString());
+        let arrow = scene.getObjectByName("Arrow" + i.toString());
         if(arrow){
           scene.remove( arrow );
         }
