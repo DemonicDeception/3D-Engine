@@ -69,50 +69,19 @@ function main() {
       this.raycaster.setFromCamera(normalizedPosition, camera);
       const intersectedObjects = this.raycaster.intersectObjects(scene.children);
       if (intersectedObjects.length != 0) {
-        console.log(intersectedObjects)
-        if(intersectedObjects[0].object.name == "ArrowDown" || intersectedObjects[0].object.name == "ArrowUp" ||intersectedObjects[0].object.name == "ArrowLeft" ||intersectedObjects[0].object.name == "ArrowRight"){
-          console.log("Move Object")
-        }
         if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
           if(this.pickedObject != null && this.pickedObject != undefined){
             this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
             this.pickedObjectSavedColor = 0
             this.pickedObject = undefined
-            clearArrows();
+            arrowHandling("remove")
             isclicked = false
           }
         }else{
           if(this.pickedObjectSavedColor == null || this.pickedObjectSavedColor == 0){
             this.pickedObject = intersectedObjects[0].object;
             this.pickedObjectSavedColor = intersectedObjects[0].object.material.color
-            let dir = new THREE.Vector3( 0, 0, 0 );
-            dir.normalize();
-            const origin = new THREE.Vector3( 0, 0, 0 );
-            const length = 3;
-            const hex = 0xffff00;
-            const arrowHelperUp = new THREE.ArrowHelper( dir, origin, length, hex );
-            arrowHelperUp.name = "ArrowUp"
-            scene.add( arrowHelperUp );
-
-            dir = new THREE.Vector3( 90, 0, 0 );
-            dir.normalize();
-            const arrowHelperRight = new THREE.ArrowHelper( dir, origin, length, hex );
-            arrowHelperRight.name = "ArrowRight"
-            scene.add( arrowHelperRight );
-
-            dir = new THREE.Vector3( -90, 0, 0 );
-            dir.normalize();
-            const arrowHelperLeft = new THREE.ArrowHelper( dir, origin, length, hex );
-            arrowHelperLeft.name = "ArrowLeft"
-            scene.add( arrowHelperLeft );
-
-            dir = new THREE.Vector3( 0, -180, 0 );
-            dir.normalize();
-            const arrowHelperDown= new THREE.ArrowHelper( dir, origin, length, hex );
-            arrowHelperDown.name = "ArrowDown"
-            scene.add( arrowHelperDown );
-            isclicked = false
-
+            arrowHandling("add")
           }
           this.pickedObject.material.color.set(Math.random() + 0x0FFF00)
         }
@@ -121,7 +90,7 @@ function main() {
           this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
           this.pickedObjectSavedColor = 0
           this.pickedObject = undefined
-          clearArrows();
+          arrowHandling("remove")
           isclicked = false
 
         }
@@ -143,6 +112,7 @@ function main() {
       camera.updateProjectionMatrix();
     }
     pickHelper.pick(pickPosition, scene, camera, time);
+
 
     renderer.render(scene, camera);
 
@@ -191,6 +161,46 @@ function main() {
     scene.remove( selectedObject3 );
     scene.remove( selectedObject4 );
 
+  }
+  function arrowHandling(action){
+    var i;
+    let dir = new THREE.Vector3(-90, 0, 0 );
+    dir.normalize();
+    const origin = new THREE.Vector3( 0, 0, 0 );
+    const length = 3;
+    const hex = 0xffff00;
+    if(action == "add"){
+      for(i = 0; i <= 6; i++){
+        const arrow = new THREE.ArrowHelper( dir, origin, length, hex );
+        arrow.name = "Arrow" + i.toString()
+        if(i < 2){
+          dir.x += 90
+        }else if(i < 4){
+          dir.x = 0
+          if(i == 3){
+            dir.y = 90
+          }else{
+            dir.y = -90
+          }
+        }else if(i < 6){
+          dir.y = 0
+          if(i == 4){
+            dir.z = 90
+          }else{
+            dir.z = -90
+            console.log(scene)
+          }
+        }
+        scene.add( arrow );
+      }
+    }else{
+      for(i = 0; i <= 6; i++){
+        var arrow = scene.getObjectByName("Arrow" + i.toString());
+        if(arrow){
+          scene.remove( arrow );
+        }
+      }
+    }
   }
 }
 
