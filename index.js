@@ -14,7 +14,6 @@ function main() {
   const canvas = document.getElementById("c");
   const renderer = new THREE.WebGLRenderer({canvas});
   
-  //camera.position.z = 60
   camera.position.y = 60
   scene.background = new THREE.Color('black');
   const controls = new OrbitControls(camera, canvas);
@@ -59,56 +58,8 @@ function main() {
     }
     return needResize;
   }
-
-  // class PickHelper {
-  //   constructor() {
-  //     this.raycaster = new THREE.Raycaster();
-  //     this.pickedObject = null;
-  //     this.pickedObjectSavedColor = null;
-  //   }
-  //   pick(normalizedPosition, scene, camera, time) {
-  //     if(isclicked == true){
-  //     this.raycaster.setFromCamera(normalizedPosition, camera);
-  //     const intersectedObjects = this.raycaster.intersectObjects(scene.children);
-  //     console.log(intersectedObjects)
-  //     if (intersectedObjects.length != 0) {
-  //       let Objname = intersectedObjects[0].object.name
-  //       if(Objname == "Arrow1" || Objname == "Arrow2" || Objname == "Arrow3" || Objname == "Arrow4" || Objname == "Arrow5"){
-  //         console.log(" ")
-  //       }
-  //       if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
-  //         if(this.pickedObject != null && this.pickedObject != undefined){
-  //           this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
-  //           this.pickedObjectSavedColor = 0
-  //           this.pickedObject = undefined
-  //           arrowHandling("remove")
-  //           isclicked = false
-  //         }
-  //       }else{
-  //         if(this.pickedObjectSavedColor == null || this.pickedObjectSavedColor == 0){
-  //           this.pickedObject = intersectedObjects[0].object;
-  //           this.pickedObjectSavedColor = intersectedObjects[0].object.material.color
-  //           arrowHandling("add")
-  //           isclicked = false
-  //         }
-  //         this.pickedObject.material.color.set(Math.random() + 0x0FFF00)
-  //       }
-  //     }else{
-  //       if(this.pickedObject && this.pickedObjectSavedColor){
-  //         this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
-  //         this.pickedObjectSavedColor = 0
-  //         this.pickedObject = undefined
-  //         arrowHandling("remove")
-  //         isclicked = false
-
-  //       }
-  //     }
-  //   }
-  //   }
-  // }
  
   const pickPosition = {x: 0, y: 0};
-  //const pickHelper = new PickHelper();
   clearPickPosition();
 
   function render(time) {
@@ -119,9 +70,6 @@ function main() {
       camera.aspect = canvas.clientWidth / canvas.clientHeight;
       camera.updateProjectionMatrix();
     }
-    //pickHelper.pick(pickPosition, scene, camera, time);
-
-
     renderer.render(scene, camera);
 
     requestAnimationFrame(render);
@@ -148,7 +96,7 @@ function main() {
       pickPosition.x = (pos.x / canvas.width ) *  2 - 1;
       pickPosition.y = (pos.y / canvas.height) * -2 + 1;
     }else{
-      
+      isclicked = false;
     }
     
 }
@@ -223,7 +171,6 @@ main();
 
 
 const fileSelector = document.getElementById('myFile');
-console.log(fileSelector)
 fileSelector.addEventListener('change', (event) => {
     const fileList = event.target.files;
     console.log(fileList);
@@ -249,6 +196,7 @@ document.getElementById("c").addEventListener( 'click', raycast, false );
 raycaster = new THREE.Raycaster();
 
 function raycast ( e ) {
+  if(isclicked == true){
       mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
       mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
   
@@ -268,5 +216,6 @@ function raycast ( e ) {
       for ( var i = 0; i < intersects.length; i++ ) {
           console.log( intersects[ i ] ); 
       }
-  
+      isclicked = false;
+    }
   }
