@@ -4,6 +4,8 @@ import {OrbitControls} from './node_modules/three/examples/jsm/controls/OrbitCon
 let isclicked = false
 const testRender = "./assets/TestRenderObj.obj"
 let clickTime
+const scene = new THREE.Scene();
+
 function main() {
   const canvas = document.getElementById("c");
   const renderer = new THREE.WebGLRenderer({canvas});
@@ -14,7 +16,6 @@ function main() {
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   //camera.position.z = 60
   camera.position.y = 60
-  const scene = new THREE.Scene();
   scene.background = new THREE.Color('black');
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 5, 0);
@@ -230,3 +231,59 @@ function main() {
   
 }
 main(); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const fileSelector = document.getElementById('myFile');
+console.log(fileSelector)
+fileSelector.addEventListener('change', (event) => {
+    const fileList = event.target.files;
+    console.log(fileList);
+    let currentFile = event.target.files[0];
+    console.log(currentFile);
+    
+    if(currentFile){
+      var r = new FileReader();
+      r.onload = function(e) {
+        var contents = e.target.result;
+        let loader = new OBJLoader();
+        //let loader = new THREE.ObjectLoader();
+        const object = loader.parse( contents );
+        console.log(object);
+        scene.add( object );
+        // loader1.load(
+        //   // resource URL
+        //   contents,
+        
+        //   // onLoad callback
+        //   function ( obj ) {
+        //     // output the text to the console
+        //     scene.add( obj )
+        //   },
+        
+        //   // onProgress callback
+        //   function ( xhr ) {
+        //     console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+        //   },
+        
+        //   // onError callback
+        //   function ( err ) {
+        //     console.error( 'An error happened' );
+        //   }
+        // );
+      }
+      r.readAsText(currentFile)
+    }
+    
+});
