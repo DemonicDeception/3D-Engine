@@ -20,8 +20,8 @@ function main() {
   controls.target.set(0, 5, 0);
   controls.update();
   {
-    const size = 50;
-    const divisions = 20;
+    const size = 500;
+    const divisions = 200;
     const gridHelper = new THREE.GridHelper( size, divisions );
     gridHelper.name = "Grid"
     scene.add( gridHelper );
