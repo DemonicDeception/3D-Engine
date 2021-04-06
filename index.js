@@ -26,21 +26,21 @@ function main() {
     gridHelper.name = "Grid"
     scene.add( gridHelper );
   }
-  {
-  const loader = new OBJLoader();
-  loader.load(
-    'assets/TestRenderObj.obj',
-    function ( object ) {
-      scene.add( object );
-    },
-    function ( xhr ) {
-      console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-    },
-    function ( error ) {
-      console.log( 'An error happened' );
-    }
-  );
-  }
+  // {
+  // const loader = new OBJLoader();
+  // loader.load(
+  //   'assets/TestRenderObj.obj',
+  //   function ( object ) {
+  //     scene.add( object );
+  //   },
+  //   function ( xhr ) {
+  //     console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+  //   },
+  //   function ( error ) {
+  //     console.log( 'An error happened' );
+  //   }
+  // );
+  // }
   {
     const boxWidth = 1;
     const boxHeight = 1;
@@ -57,7 +57,7 @@ function main() {
 
   {
     const color = 0xFFFFFF;
-    const intensity = 1;
+    const intensity = 0.5;
     const light = new THREE.DirectionalLight(color, intensity);
     light.position.set(-1, 2, 4);
     camera.add(light);
