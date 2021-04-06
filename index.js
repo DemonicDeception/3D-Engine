@@ -265,3 +265,11 @@ function raycast ( e ) {
 
     }
   }
+
+  document.getElementById("objMove").addEventListener("click", objMoveBtn)
+  function objMoveBtn(){
+    let c = selectedObj
+    if(c) {
+      console.log("Selected object: " + selectedObj.name)
+    }
+  }
