@@ -199,6 +199,8 @@ raycaster = new THREE.Raycaster();
 function raycast ( e ) {
   if(isclicked == true){
     var smallestDist;
+    var smallestDist1;
+
       mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
       mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
   
@@ -207,6 +209,16 @@ function raycast ( e ) {
       var intersects = raycaster.intersectObjects( scene.children, true );
   
       for ( var i = 0; i < intersects.length; i++ ) {
+        for ( var i = 0; i < intersects.length; i++ ) {
+          if(intersects[i].object.name == "Grid"){
+          }else{
+            if(smallestDist == undefined){
+              smallestDist1 = intersects[i];
+            }else if(smallestDist > intersects[i].distance){
+              smallestDist1 = intersects[i]
+            }
+          }
+        }
       }
       mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
       mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
@@ -225,8 +237,18 @@ function raycast ( e ) {
           }
         }
       }
-      if(smallestDist){
-        selectedObj = smallestDist.object
+      if(smallestDist || smallestDist1){
+        if(smallestDist && smallestDist1){
+          if(smallestDist.distance > smallestDist1.distance){
+            selectedObj = smallestDist1.object
+          }else{
+            selectedObj = smallestDist.object
+          }
+        }else if(smallestDist){
+          selectedObj = smallestDist.object
+        }else if(smallestDist1){
+          selectedObj = smallestDist1.object
+        }
         selectedObj.material.color.set(Math.random() + 0x35ff03)
       }else{
         if(selectedObj){
@@ -235,6 +257,7 @@ function raycast ( e ) {
         }
 
       }
+      console.log(scene.children)
       isclicked = false;
 
     }
