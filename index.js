@@ -21,8 +21,8 @@ function main() {
   controls.target.set(0, 5, 0);
   controls.update();
   {
-    const size = 500;
-    const divisions = 200;
+    const size = 50;
+    const divisions = 20;
     const gridHelper = new THREE.GridHelper( size, divisions );
     gridHelper.name = "Grid"
     scene.add( gridHelper );
@@ -163,14 +163,6 @@ main();
 
 
 
-
-
-
-
-
-
-
-
 const fileSelector = document.getElementById('myFile');
 fileSelector.addEventListener('change', (event) => {
     const fileList = event.target.files;
@@ -184,8 +176,16 @@ fileSelector.addEventListener('change', (event) => {
         var contents = e.target.result;
         let loader = new OBJLoader();
         const object = loader.parse( contents );
+        if(object.type == "Group"){
+          let individuals = object.children
+          for(var x = 0; x < individuals.length; x++){
+            scene.add(individuals[x])
+          }
+        }else{
+          scene.add( object );
+        }
+        console.log(scene.children);
         console.log(object);
-        scene.add( object );
       }
       r.readAsText(currentFile)
     }
@@ -207,7 +207,9 @@ function raycast ( e ) {
       raycaster.setFromCamera( mouse, camera );    
   
       var intersects = raycaster.intersectObjects( scene.children, true );
-  
+      if(selectedObj != undefined){
+        selectedObj.material.color.set(Math.random() + 0xEEEEEE)
+      }
       for ( var i = 0; i < intersects.length; i++ ) {
         for ( var i = 0; i < intersects.length; i++ ) {
           if(intersects[i].object.name == "Grid"){
@@ -237,17 +239,18 @@ function raycast ( e ) {
           }
         }
       }
+
       if(smallestDist || smallestDist1){
         if(smallestDist && smallestDist1){
-          if(smallestDist.distance > smallestDist1.distance){
-            selectedObj = smallestDist1.object
-          }else{
-            selectedObj = smallestDist.object
-          }
+            if(smallestDist.distance > smallestDist1.distance){
+              selectedObj = smallestDist1.object
+            }else{
+              selectedObj = smallestDist.object
+            }
         }else if(smallestDist){
-          selectedObj = smallestDist.object
+            selectedObj = smallestDist.object
         }else if(smallestDist1){
-          selectedObj = smallestDist1.object
+            selectedObj = smallestDist1.object
         }
         selectedObj.material.color.set(Math.random() + 0x35ff03)
       }else{
@@ -257,7 +260,7 @@ function raycast ( e ) {
         }
 
       }
-      console.log(scene.children)
+      console.log(selectedObj)
       isclicked = false;
 
     }
