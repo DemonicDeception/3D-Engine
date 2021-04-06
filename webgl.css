@@ -24,6 +24,10 @@ html, body {
 	  margin-top: 1vw;
 	  margin-left: 0.5vw;
   }
+  #topBar > input{
+	margin-top: 1vw;
+	margin-left: 0.5vw;
+  }
   #toolsEditMode{
 	position: absolute;
 	left: -1vw;

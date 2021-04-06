@@ -2,18 +2,18 @@ import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threej
 import {OBJLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/loaders/OBJLoader.js';
 import {OrbitControls} from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 let isclicked = false
-const testRender = "./assets/TestRenderObj.obj"
 let clickTime
 const scene = new THREE.Scene();
-
+var raycaster, mouse = { x : 0, y : 0 };
+const fov = 60;
+const aspect = 2;  
+const near = 0.1;
+const far = 200;
+const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 function main() {
   const canvas = document.getElementById("c");
   const renderer = new THREE.WebGLRenderer({canvas});
-  const fov = 60;
-  const aspect = 2;  
-  const near = 0.1;
-  const far = 200;
-  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+  
   //camera.position.z = 60
   camera.position.y = 60
   scene.background = new THREE.Color('black');
@@ -27,21 +27,6 @@ function main() {
     gridHelper.name = "Grid"
     scene.add( gridHelper );
   }
-  // {
-  // const loader = new OBJLoader();
-  // loader.load(
-  //   'assets/TestRenderObj.obj',
-  //   function ( object ) {
-  //     scene.add( object );
-  //   },
-  //   function ( xhr ) {
-  //     console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-  //   },
-  //   function ( error ) {
-  //     console.log( 'An error happened' );
-  //   }
-  // );
-  // }
   {
     const boxWidth = 1;
     const boxHeight = 1;
@@ -75,54 +60,55 @@ function main() {
     return needResize;
   }
 
-  class PickHelper {
-    constructor() {
-      this.raycaster = new THREE.Raycaster();
-      this.pickedObject = null;
-      this.pickedObjectSavedColor = null;
-    }
-    pick(normalizedPosition, scene, camera, time) {
-      if(isclicked == true){
-      this.raycaster.setFromCamera(normalizedPosition, camera);
-      const intersectedObjects = this.raycaster.intersectObjects(scene.children);
-      if (intersectedObjects.length != 0) {
-        let Objname = intersectedObjects[0].object.name
-        if(Objname == "Arrow1" || Objname == "Arrow2" || Objname == "Arrow3" || Objname == "Arrow4" || Objname == "Arrow5"){
-          console.log(" ")
-        }
-        if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
-          if(this.pickedObject != null && this.pickedObject != undefined){
-            this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
-            this.pickedObjectSavedColor = 0
-            this.pickedObject = undefined
-            arrowHandling("remove")
-            isclicked = false
-          }
-        }else{
-          if(this.pickedObjectSavedColor == null || this.pickedObjectSavedColor == 0){
-            this.pickedObject = intersectedObjects[0].object;
-            this.pickedObjectSavedColor = intersectedObjects[0].object.material.color
-            arrowHandling("add")
-            isclicked = false
-          }
-          this.pickedObject.material.color.set(Math.random() + 0x0FFF00)
-        }
-      }else{
-        if(this.pickedObject && this.pickedObjectSavedColor){
-          this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
-          this.pickedObjectSavedColor = 0
-          this.pickedObject = undefined
-          arrowHandling("remove")
-          isclicked = false
+  // class PickHelper {
+  //   constructor() {
+  //     this.raycaster = new THREE.Raycaster();
+  //     this.pickedObject = null;
+  //     this.pickedObjectSavedColor = null;
+  //   }
+  //   pick(normalizedPosition, scene, camera, time) {
+  //     if(isclicked == true){
+  //     this.raycaster.setFromCamera(normalizedPosition, camera);
+  //     const intersectedObjects = this.raycaster.intersectObjects(scene.children);
+  //     console.log(intersectedObjects)
+  //     if (intersectedObjects.length != 0) {
+  //       let Objname = intersectedObjects[0].object.name
+  //       if(Objname == "Arrow1" || Objname == "Arrow2" || Objname == "Arrow3" || Objname == "Arrow4" || Objname == "Arrow5"){
+  //         console.log(" ")
+  //       }
+  //       if(intersectedObjects[0].object.name == "Grid" || intersectedObjects[0].object.name == "GridHelper"){
+  //         if(this.pickedObject != null && this.pickedObject != undefined){
+  //           this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
+  //           this.pickedObjectSavedColor = 0
+  //           this.pickedObject = undefined
+  //           arrowHandling("remove")
+  //           isclicked = false
+  //         }
+  //       }else{
+  //         if(this.pickedObjectSavedColor == null || this.pickedObjectSavedColor == 0){
+  //           this.pickedObject = intersectedObjects[0].object;
+  //           this.pickedObjectSavedColor = intersectedObjects[0].object.material.color
+  //           arrowHandling("add")
+  //           isclicked = false
+  //         }
+  //         this.pickedObject.material.color.set(Math.random() + 0x0FFF00)
+  //       }
+  //     }else{
+  //       if(this.pickedObject && this.pickedObjectSavedColor){
+  //         this.pickedObject.material.color.set(Math.random() + 0xEEEEEE)
+  //         this.pickedObjectSavedColor = 0
+  //         this.pickedObject = undefined
+  //         arrowHandling("remove")
+  //         isclicked = false
 
-        }
-      }
-    }
-    }
-  }
+  //       }
+  //     }
+  //   }
+  //   }
+  // }
  
   const pickPosition = {x: 0, y: 0};
-  const pickHelper = new PickHelper();
+  //const pickHelper = new PickHelper();
   clearPickPosition();
 
   function render(time) {
@@ -133,7 +119,7 @@ function main() {
       camera.aspect = canvas.clientWidth / canvas.clientHeight;
       camera.updateProjectionMatrix();
     }
-    pickHelper.pick(pickPosition, scene, camera, time);
+    //pickHelper.pick(pickPosition, scene, camera, time);
 
 
     renderer.render(scene, camera);
@@ -177,17 +163,8 @@ function main() {
   }
   canvas.addEventListener("mousedown", onMouseDown);
   canvas.addEventListener("mouseup", setPickPosition)
-  //canvas.addEventListener("click", setPickPosition)
-  
-  // let c = document.getElementById("c")
-  // console.log(c)
-  // c.addEventListener('mouseup', setPickPosition);
-  // c.addEventListener('mousedown', mousedownfunc);
-  // function mousedownfunc(){
-  //   console.log("tesjl")
-  //   var date = new Date();
-  //   clickTime = date.getSeconds();
-  // }
+
+
   function arrowHandling(action){
     var i;
     let dir = new THREE.Vector3(-90, 0, 0 );
@@ -258,32 +235,38 @@ fileSelector.addEventListener('change', (event) => {
       r.onload = function(e) {
         var contents = e.target.result;
         let loader = new OBJLoader();
-        //let loader = new THREE.ObjectLoader();
         const object = loader.parse( contents );
         console.log(object);
         scene.add( object );
-        // loader1.load(
-        //   // resource URL
-        //   contents,
-        
-        //   // onLoad callback
-        //   function ( obj ) {
-        //     // output the text to the console
-        //     scene.add( obj )
-        //   },
-        
-        //   // onProgress callback
-        //   function ( xhr ) {
-        //     console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-        //   },
-        
-        //   // onError callback
-        //   function ( err ) {
-        //     console.error( 'An error happened' );
-        //   }
-        // );
       }
       r.readAsText(currentFile)
     }
     
 });
+
+
+document.getElementById("c").addEventListener( 'click', raycast, false );
+raycaster = new THREE.Raycaster();
+
+function raycast ( e ) {
+      mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+  
+      raycaster.setFromCamera( mouse, camera );    
+  
+      var intersects = raycaster.intersectObjects( scene.children, true );
+  
+      for ( var i = 0; i < intersects.length; i++ ) {
+          console.log( intersects[ i ] ); 
+      }
+      mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+  
+      raycaster.setFromCamera( mouse, camera );    
+  
+      var intersects = raycaster.intersectObjects( scene.children );
+      for ( var i = 0; i < intersects.length; i++ ) {
+          console.log( intersects[ i ] ); 
+      }
+  
+  }
