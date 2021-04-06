@@ -9,6 +9,7 @@ const fov = 60;
 const aspect = 2;  
 const near = 0.1;
 const far = 200;
+var selectedObj;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 function main() {
   const canvas = document.getElementById("c");
@@ -197,6 +198,7 @@ raycaster = new THREE.Raycaster();
 
 function raycast ( e ) {
   if(isclicked == true){
+    var smallestDist;
       mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
       mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
   
@@ -205,7 +207,6 @@ function raycast ( e ) {
       var intersects = raycaster.intersectObjects( scene.children, true );
   
       for ( var i = 0; i < intersects.length; i++ ) {
-          console.log( intersects[ i ] ); 
       }
       mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
       mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
@@ -214,8 +215,27 @@ function raycast ( e ) {
   
       var intersects = raycaster.intersectObjects( scene.children );
       for ( var i = 0; i < intersects.length; i++ ) {
-          console.log( intersects[ i ] ); 
+        if(intersects[i].object.name == "Grid"){
+        }else{
+          console.log(intersects[i])
+          if(smallestDist == undefined){
+            smallestDist = intersects[i];
+          }else if(smallestDist > intersects[i].distance){
+            smallestDist = intersects[i]
+          }
+        }
+      }
+      if(smallestDist){
+        selectedObj = smallestDist.object
+        selectedObj.material.color.set(Math.random() + 0x35ff03)
+      }else{
+        if(selectedObj){
+          selectedObj.material.color.set(Math.random() + 0xEEEEEE)
+          selectedObj = undefined
+        }
+
       }
       isclicked = false;
+
     }
   }
