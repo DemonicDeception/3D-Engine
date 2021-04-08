@@ -1,5 +1,5 @@
-import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/build/three.module.js';
-import {OBJLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/loaders/OBJLoader.js';
+import * as THREE from './node_modules/three/build/three.module.js';
+import {OBJLoader} from './node_modules/three/examples/jsm/loaders/OBJLoader';
 import {OrbitControls} from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 let isclicked = false
 let clickTime
